@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Student Buddy",
+  "version": "1.0",
+  "description": "Your ultimate study companion.",
+  "permissions": ["storage", "activeTab", "contextMenus"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
