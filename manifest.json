@@ -6,8 +6,7 @@
   "permissions": ["storage", "activeTab", "contextMenus", "scripting"],
   "host_permissions": ["https://*.supabase.co/*"],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js",
