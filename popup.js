@@ -1,11 +1,47 @@
-// Day 1 Logic: Timer & UI State
+/**
+ * STUDENT BUDDY PRO - Day 2 Final
+ * Features: Pomodoro Timer & Supabase Cloud Sync
+ */
+
+// --- CONFIGURATION ---
+const supabase = {
+    url: 'https://cxbvhixihsyukrrpnpra.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YnZoaXhpaHN5dWtycnBucHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjAyMDksImV4cCI6MjA5Mzk5NjIwOX0.yjvpxotZwQU7ui2m9BNB9RXe5mGN9UkTHhqSvhOlq-I',
+
+    // Helper for POST requests
+    async saveNote(note) {
+        return fetch(`${this.url}/rest/v1/saved_notes`, {
+            method: 'POST',
+            headers: {
+                'apikey': this.key,
+                'Authorization': `Bearer ${this.key}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(note)
+        });
+    },
+
+    // Helper for GET requests
+    async fetchNotes(limit = 3) {
+        const response = await fetch(`${this.url}/rest/v1/saved_notes?select=*&order=created_at.desc&limit=${limit}`, {
+            headers: {
+                'apikey': this.key,
+                'Authorization': `Bearer ${this.key}`
+            }
+        });
+        return response.json();
+    }
+};
+
+// --- TIMER LOGIC (Day 1 Core) ---
 let timeLeft = 25 * 60;
 let timerId = null;
 
 const timerDisplay = document.getElementById('timer');
 const startBtn = document.getElementById('startTimer');
 
-function updateDisplay() {
+function updateTimerDisplay() {
     const mins = Math.floor(timeLeft / 60);
     const secs = timeLeft % 60;
     timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -16,80 +52,69 @@ startBtn.addEventListener('click', () => {
         clearInterval(timerId);
         timerId = null;
         startBtn.textContent = 'Start';
-        startBtn.classList.replace('bg-red-600', 'bg-blue-600');
+        startBtn.style.backgroundColor = ''; // Reverts to CSS default
     } else {
         startBtn.textContent = 'Pause';
-        startBtn.classList.replace('bg-blue-600', 'bg-red-600');
+        startBtn.style.backgroundColor = '#ef4444'; // Red for pause
         timerId = setInterval(() => {
             timeLeft--;
-            updateDisplay();
-            if (timeLeft <= 0) clearInterval(timerId);
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                alert("Time to take a break!");
+            }
         }, 1000);
     }
 });
-// Day 2: Supabase Integration
-const SUPABASE_URL = 'https://cxbvhixihsyukrrpnpra.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YnZoaXhpaHN5dWtycnBucHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjAyMDksImV4cCI6MjA5Mzk5NjIwOX0.yjvpxotZwQU7ui2m9BNB9RXe5mGN9UkTHhqSvhOlq-I';
 
+// --- CLOUD LOGIC (Day 2 Advanced) ---
 document.getElementById('saveNoteBtn').addEventListener('click', async () => {
     const statusEl = document.getElementById('status');
     
-    // Get the current active tab info
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    const noteData = {
-        title: tab.title,
-        url: tab.url,
-        content: "Quick save from extension"
-    };
-
     try {
-        statusEl.classList.replace('bg-emerald-500', 'bg-yellow-500'); // Show "processing"
+        // Change status to "processing" (Yellow)
+        statusEl.style.backgroundColor = '#eab308'; 
         
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/saved_notes`, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify(noteData)
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+        const res = await supabase.saveNote({
+            title: tab.title,
+            url: tab.url,
+            content: "Quick save from extension"
         });
 
-        if (response.ok) {
-            statusEl.classList.replace('bg-yellow-500', 'bg-emerald-500');
-            alert('Study link saved to dashboard!');
+        if (res.ok) {
+            statusEl.style.backgroundColor = '#10b981'; // Back to Green
+            loadNotes(); // Refresh the list without reloading the popup
         } else {
-            throw new Error('Failed to save');
+            throw new Error('Save failed');
         }
     } catch (error) {
-        console.error(error);
-        statusEl.classList.replace('bg-yellow-500', 'bg-red-500');
-        alert('Error saving note.');
+        console.error('Supabase Error:', error);
+        statusEl.style.backgroundColor = '#ef4444'; // Error Red
     }
 });
+
 async function loadNotes() {
     const listEl = document.getElementById('notesList');
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/saved_notes?select=*&order=created_at.desc&limit=3`, {
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
-        });
-        const data = await response.json();
+        const data = await supabase.fetchNotes();
         
+        if (data.length === 0) {
+            listEl.innerHTML = '<p class="text-xs text-slate-500 italic px-1">No saves yet.</p>';
+            return;
+        }
+
         listEl.innerHTML = data.map(note => `
-            <div class="p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-xs">
-                <div class="text-slate-300 font-medium truncate">${note.title}</div>
-                <div class="text-slate-500 truncate">${new Date(note.created_at).toLocaleDateString()}</div>
+            <div class="p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-xs mb-2">
+                <div class="text-slate-300 font-medium truncate" title="${note.title}">${note.title}</div>
+                <div class="text-slate-500 truncate text-[10px]">${new Date(note.created_at).toLocaleDateString()}</div>
             </div>
         `).join('');
     } catch (e) {
-        listEl.innerHTML = '<p class="text-xs text-red-400">Failed to load</p>';
+        listEl.innerHTML = '<p class="text-xs text-red-400">Sync Error</p>';
     }
 }
 
-// Call on startup
+// Initialize on open
 loadNotes();
