@@ -69,3 +69,27 @@ document.getElementById('saveNoteBtn').addEventListener('click', async () => {
         alert('Error saving note.');
     }
 });
+async function loadNotes() {
+    const listEl = document.getElementById('notesList');
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/saved_notes?select=*&order=created_at.desc&limit=3`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        const data = await response.json();
+        
+        listEl.innerHTML = data.map(note => `
+            <div class="p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-xs">
+                <div class="text-slate-300 font-medium truncate">${note.title}</div>
+                <div class="text-slate-500 truncate">${new Date(note.created_at).toLocaleDateString()}</div>
+            </div>
+        `).join('');
+    } catch (e) {
+        listEl.innerHTML = '<p class="text-xs text-red-400">Failed to load</p>';
+    }
+}
+
+// Call on startup
+loadNotes();
