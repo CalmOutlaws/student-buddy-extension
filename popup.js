@@ -28,7 +28,7 @@ startBtn.addEventListener('click', () => {
     }
 });
 // Day 2: Supabase Integration
-const SUPABASE_URL = 'sb_publishable_--B-Ndk3Ata6TO-rC7tokA_PMeAEFPH';
+const SUPABASE_URL = 'https://cxbvhixihsyukrrpnpra.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4YnZoaXhpaHN5dWtycnBucHJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MjAyMDksImV4cCI6MjA5Mzk5NjIwOX0.yjvpxotZwQU7ui2m9BNB9RXe5mGN9UkTHhqSvhOlq-I';
 
 document.getElementById('saveNoteBtn').addEventListener('click', async () => {
