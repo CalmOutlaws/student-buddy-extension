@@ -93,6 +93,17 @@ document.getElementById('saveNoteBtn').addEventListener('click', async () => {
         console.error('Supabase Error:', error);
         statusEl.style.backgroundColor = '#ef4444'; // Error Red
     }
+    document.getElementById('summarizeBtn').addEventListener('click', async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    // Send a message to content.js
+    chrome.tabs.sendMessage(tab.id, { action: "getText" }, (response) => {
+        if (response) {
+            console.log("Received text from page:", response.text);
+            alert("Content Script captured text! Ready for AI summarizing tomorrow.");
+        }
+    });
+});
 });
 
 async function loadNotes() {
@@ -105,12 +116,17 @@ async function loadNotes() {
             return;
         }
 
-        listEl.innerHTML = data.map(note => `
-            <div class="p-2 bg-slate-800/50 rounded-lg border border-slate-700 text-xs mb-2">
-                <div class="text-slate-300 font-medium truncate" title="${note.title}">${note.title}</div>
-                <div class="text-slate-500 truncate text-[10px]">${new Date(note.created_at).toLocaleDateString()}</div>
-            </div>
-        `).join('');
+        // Replace the map section inside your loadNotes function:
+listEl.innerHTML = data.map(note => `
+    <div class="note-item">
+        <div style="font-weight: 500; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${note.title}
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+            ${new Date(note.created_at).toLocaleDateString()} • Saved to Cloud
+        </div>
+    </div>
+`).join('');
     } catch (e) {
         listEl.innerHTML = '<p class="text-xs text-red-400">Sync Error</p>';
     }

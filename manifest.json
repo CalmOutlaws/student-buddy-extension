@@ -3,13 +3,25 @@
   "name": "Student Buddy Pro",
   "version": "1.0.0",
   "description": "An AI-powered academic assistant for focus and research.",
-  "permissions": ["storage", "activeTab", "contextMenus", "scripting"],
-  "host_permissions": ["https://*.supabase.co/*"],
+  "permissions": [
+    "storage", 
+    "activeTab", 
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.supabase.co/*"
+  ],
   "action": {
     "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }
