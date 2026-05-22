@@ -1,6 +1,6 @@
 /**
- * STUDENT BUDDY PRO - Day 2 Final
- * Features: Pomodoro Timer & Supabase Cloud Sync
+ * STUDENT BUDDY PRO - Day 4 Final
+ * Features: Pomodoro Timer, Supabase Cloud Sync, & Local AI Summarizer
  */
 
 // --- CONFIGURATION ---
@@ -72,8 +72,7 @@ document.getElementById('saveNoteBtn').addEventListener('click', async () => {
     const statusEl = document.getElementById('status');
     
     try {
-        // Change status to "processing" (Yellow)
-        statusEl.style.backgroundColor = '#eab308'; 
+        statusEl.style.backgroundColor = '#eab308'; // Processing (Yellow)
         
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -85,7 +84,7 @@ document.getElementById('saveNoteBtn').addEventListener('click', async () => {
 
         if (res.ok) {
             statusEl.style.backgroundColor = '#10b981'; // Back to Green
-            loadNotes(); // Refresh the list without reloading the popup
+            loadNotes(); // Refresh list
         } else {
             throw new Error('Save failed');
         }
@@ -93,19 +92,74 @@ document.getElementById('saveNoteBtn').addEventListener('click', async () => {
         console.error('Supabase Error:', error);
         statusEl.style.backgroundColor = '#ef4444'; // Error Red
     }
-    document.getElementById('summarizeBtn').addEventListener('click', async () => {
+});
+
+// --- AI SUMMARIZATION LOGIC (Day 4 Core) ---
+document.getElementById('summarizeBtn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('status');
+    
+    statusEl.style.backgroundColor = '#eab308'; // Processing (Yellow)
+    
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    // Send a message to content.js
-    chrome.tabs.sendMessage(tab.id, { action: "getText" }, (response) => {
-        if (response) {
-            console.log("Received text from page:", response.text);
-            alert("Content Script captured text! Ready for AI summarizing tomorrow.");
+    chrome.tabs.sendMessage(tab.id, { action: "getText" }, async (response) => {
+        if (!response || !response.text) {
+            statusEl.style.backgroundColor = '#ef4444'; 
+            alert("Could not read page content. Try refreshing the page.");
+            return;
+        }
+
+        try {
+            if (!window.ai || !window.ai.summarizer) {
+                console.log("On-device AI not configured. Running simulation mode.");
+                simulateAISummarization(response.text, tab, statusEl);
+                return;
+            }
+
+            const summarizer = await window.ai.summarizer.create();
+            const summary = await summarizer.summarize(response.text);
+            
+            await saveAISummaryToCloud(tab.title, tab.url, summary, statusEl);
+            
+        } catch (error) {
+            console.error("AI Error:", error);
+            statusEl.style.backgroundColor = '#ef4444';
+            simulateAISummarization(response.text, tab, statusEl);
         }
     });
 });
-});
 
+// Production Fallback
+async function simulateAISummarization(text, tab, statusEl) {
+    const cleanSentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 20);
+    const keyTakeaways = cleanSentences.slice(0, 3).map(s => `• ${s}`).join('\n');
+    const structuralSummary = `AI SUMMARY (Simulated):\nThis page covers "${tab.title}". Key points:\n${keyTakeaways}`;
+    
+    await saveAISummaryToCloud(tab.title, tab.url, structuralSummary, statusEl);
+}
+
+// Cloud sync helper for AI
+async function saveAISummaryToCloud(title, url, summaryContent, statusEl) {
+    try {
+        const res = await supabase.saveNote({
+            title: `✨ AI Summary: ${title}`,
+            url: url,
+            content: summaryContent
+        });
+
+        if (res.ok) {
+            statusEl.style.backgroundColor = '#10b981'; // Success Green
+            alert('AI Summary generated and synced to cloud!');
+            loadNotes(); 
+        } else {
+            throw new Error();
+        }
+    } catch {
+        statusEl.style.backgroundColor = '#ef4444';
+    }
+}
+
+// --- RENDERING LOGIC ---
 async function loadNotes() {
     const listEl = document.getElementById('notesList');
     try {
@@ -116,17 +170,16 @@ async function loadNotes() {
             return;
         }
 
-        // Replace the map section inside your loadNotes function:
-listEl.innerHTML = data.map(note => `
-    <div class="note-item">
-        <div style="font-weight: 500; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            ${note.title}
-        </div>
-        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px;">
-            ${new Date(note.created_at).toLocaleDateString()} • Saved to Cloud
-        </div>
-    </div>
-`).join('');
+        listEl.innerHTML = data.map(note => `
+            <div class="note-item">
+                <div style="font-weight: 500; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${note.title}
+                </div>
+                <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+                    ${new Date(note.created_at).toLocaleDateString()} • Saved to Cloud
+                </div>
+            </div>
+        `).join('');
     } catch (e) {
         listEl.innerHTML = '<p class="text-xs text-red-400">Sync Error</p>';
     }
