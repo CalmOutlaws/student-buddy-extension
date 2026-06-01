@@ -23,7 +23,7 @@
 
     <div style="margin-top: 24px;">
         <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin-bottom: 12px; letter-spacing: 0.05em;">RESEARCH TOOLS</p>
-        
+
         <button id="summarizeBtn" class="btn-secondary">
             <div style="font-weight: 600; font-size: 13px;">Summarize Page</div>
             <div style="font-size: 11px; color: var(--text-dim);">Extract key takeaways via AI</div>
@@ -33,12 +33,123 @@
             <div style="font-weight: 600; font-size: 13px; color: #60a5fa;">Save to Dashboard</div>
             <div style="font-size: 11px; color: var(--text-dim);">Sync current tab to Supabase</div>
         </button>
+
+        <button id="flashcardBtn" class="btn-secondary">
+            <div style="font-weight: 600; font-size: 13px;">Flashcards</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Spaced repetition study</div>
+        </button>
+
+        <button id="settingsBtn" class="btn-secondary">
+            <div style="font-weight: 600; font-size: 13px;">Settings</div>
+            <div style="font-size: 11px; color: var(--text-dim);">Customize extension</div>
+        </button>
     </div>
 
     <div style="margin-top: 24px;">
         <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin-bottom: 12px; letter-spacing: 0.05em;">RECENT SAVES</p>
         <div id="notesList">
             </div>
+    </div>
+
+    <!-- Flashcard Modal -->
+    <div id="flashcardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Flashcards</h3>
+                <button id="closeFlashcardModal" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="flashcardTabs">
+                    <button class="tablink active" onclick="openFlashcardTab(event, 'review')">Review</button>
+                    <button class="tablink" onclick="openFlashcardTab(event, 'add')">Add New</button>
+                    <button class="tablink" onclick="openFlashcardTab(event, 'browse')">Browse</button>
+                </div>
+                <div id="review" class="tabcontent">
+                    <div id="flashcardReview">
+                        <div id="flashcardPrompt"></div>
+                        <div id="flashcardAnswer" class="hidden"></div>
+                        <div id="flashcardStats">
+                            <span>Remaining: <span id="remainingCount">0</span></span>
+                        </div>
+                        <div id="flashcardControls" class="hidden">
+                            <button id="flipCard" class="btn-secondary">Show Answer</button>
+                            <div id="ratingButtons">
+                                <button class="rating-btn" data-rating="1">Again</button>
+                                <button class="rating-btn" data-rating="2">Hard</button>
+                                <button class="rating-btn" data-rating="3">Good</button>
+                                <button class="rating-btn" data-rating="4">Easy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="add" class="tabcontent">
+                    <div class="form-group">
+                        <label for="flashcardFront">Front (Question)</label>
+                        <textarea id="flashcardFront" rows="3" placeholder="Enter the question or prompt"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="flashcardBack">Back (Answer)</label>
+                        <textarea id="flashcardBack" rows="3" placeholder="Enter the answer"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="flashcardTags">Tags (comma-separated)</label>
+                        <input type="text" id="flashcardTags" placeholder="e.g., biology, chapter 1">
+                    </div>
+                    <button id="saveFlashcard" class="btn-main">Save Flashcard</button>
+                </div>
+                <div id="browse" class="tabcontent">
+                    <div class="form-group">
+                        <input type="text" id="flashcardSearch" placeholder="Search flashcards...">
+                    </div>
+                    <div class="form-group">
+                        <label for="flashcardFilterTags">Filter by Tags</label>
+                        <input type="text" id="flashcardFilterTags" placeholder="Comma-separated tags">
+                    </div>
+                    <div id="flashcardList">
+                        <p class="text-xs text-slate-500 italic px-1">No flashcards yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button id="closeSettingsModal" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="pomodoroWork">Work Duration (minutes)</label>
+                    <input type="number" id="pomodoroWork" min="1" max="60" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="pomodoroBreak">Break Duration (minutes)</label>
+                    <input type="number" id="pomodoroBreak" min="1" max="30" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="themeSelect">Theme</label>
+                    <select id="themeSelect">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="system">System</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enableNotifications"> Enable Notifications
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="enableSounds"> Enable Sound Effects
+                    </label>
+                </div>
+                <button id="saveSettings" class="btn-main">Save Settings</button>
+            </div>
+        </div>
     </div>
 
     <script src="popup.js"></script>

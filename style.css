@@ -95,3 +95,241 @@ button {
     margin-bottom: 8px;
     border-left: 3px solid var(--primary);
 }
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: var(--card);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-dim);
+}
+
+.modal-close:hover {
+    color: var(--text-main);
+}
+
+.modal-body {
+    margin: 20px 0;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--text-main);
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.tablink {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 10px 16px;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    margin-right: 4px;
+    border-bottom: none;
+}
+
+.tablink.active {
+    background-color: var(--card);
+    border-bottom: 2px solid var(--primary);
+    color: var(--text-main);
+}
+
+.tabcontent {
+    display: none;
+    animation: fadeEffect 0.3s;
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+#flashcardReview {
+    text-align: center;
+    padding: 20px;
+}
+
+#flashcardPrompt {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    min-height: 48px;
+}
+
+#flashcardAnswer {
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    display: none;
+}
+
+#flashcardAnswer.visible {
+    display: block;
+}
+
+#flashcardStats {
+    margin: 20px 0;
+    font-size: 14px;
+    color: var(--text-dim);
+}
+
+#flashcardControls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.rating-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rating-btn[data-rating="1"] {
+    background-color: #ef4444;
+    color: white;
+}
+
+.rating-btn[data-rating="2"] {
+    background-color: #f97316;
+    color: white;
+}
+
+.rating-btn[data-rating="3"] {
+    background-color: #10b981;
+    color: white;
+}
+
+.rating-btn[data-rating="4"] {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.rating-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#flipCard {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#flipCard:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.hidden {
+    display: none;
+}
+
+#flashcardList .note-item {
+    border-left: 3px solid #10b981;
+}
+
+#flashcardSearch,
+#flashcardFilterTags {
+    margin-bottom: 12px;
+}
+
+#saveFlashcard,
+#saveSettings {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#saveFlashcard:hover,
+#saveSettings:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
