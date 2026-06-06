@@ -80,6 +80,11 @@ document.getElementById('resetTimer').addEventListener('click', () => {
     updateTimerDisplay();
 });
 
+document.getElementById('expandDashboard').addEventListener('click', () => {
+    // Open popup.html as a brand new full-page tab in the current window
+    chrome.tabs.create({ url: chrome.runtime.getURL("popup.html") });
+});
+
 // --- CLOUD ENGINE PIPELINE ---
 document.getElementById('saveNoteBtn').addEventListener('click', async () => {
     const statusEl = document.getElementById('status');

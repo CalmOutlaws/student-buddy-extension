@@ -333,3 +333,54 @@ button {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
+
+/* --- ADAPTIVE ARCHITECTURE WRAPPERS --- */
+body {
+    width: 350px; /* Default narrow extension context width */
+    min-height: 500px;
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.app-container {
+    width: 100%;
+}
+
+.dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- THE FULL PAGE TAB OVERHAUL (Media Query) --- */
+/* If the screen width grows past 600px (like inside a standalone browser tab) */
+@media (min-width: 600px) {
+    body {
+        width: 100vw; /* Stretch window globally */
+        height: 100vh;
+        max-width: 1200px;
+        margin: 0 auto; /* Center alignment */
+        padding: 40px;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr; /* Perfect side-by-side split screen balance */
+        gap: 24px;
+        align-items: start;
+    }
+    
+    #expandDashboard {
+        display: none !important; /* Hide trigger link when already fullscreen */
+    }
+}

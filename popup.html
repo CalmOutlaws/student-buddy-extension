@@ -2,58 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header">
-        <h1 class="title">Student Buddy Pro</h1>
-        <div id="status" style="width: 10px; height: 10px; border-radius: 50%; background-color: #10b981; transition: background-color 0.3s;"></div>
-    </div>
-
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <select id="timerPreset" style="background: transparent; color: var(--text-dim); border: none; font-size: 11px; font-weight: 600; cursor: pointer; outline: none;">
-                <option value="25" style="background: var(--bg);">POMODORO (25M)</option>
-                <option value="45" style="background: var(--bg);">DEEP WORK (45M)</option>
-                <option value="5" style="background: var(--bg);">SHORT BREAK (5M)</option>
-            </select>
-            <span id="timer" class="timer-val">25:00</span>
+    <div class="app-container">
+        <div class="header">
+            <div>
+                <h1 class="title" style="margin: 0;">Student Buddy Pro</h1>
+                <span id="expandDashboard" style="font-size: 10px; color: #60a5fa; cursor: pointer; text-decoration: underline; display: block; margin-top: 2px;">🖥️ Launch Full Workspace</span>
+            </div>
+            <div id="status" style="width: 10px; height: 10px; border-radius: 50%; background-color: #10b981; transition: background-color 0.3s;"></div>
         </div>
-        <div style="display: flex; gap: 10px; margin-top: 12px;">
-            <button id="startTimer" class="btn-main">Start Session</button>
-            <button id="resetTimer" class="btn-secondary" style="width: 45px; text-align: center; margin-bottom: 0; padding: 0;">↺</button>
-        </div>
-    </div>
 
-    <div class="card" style="margin-top: 16px;">
-        <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin: 0 0 10px 0; letter-spacing: 0.05em;">AI WORKBENCH</p>
-        <input type="text" id="customPrompt" placeholder="Ask AI something about this page..." style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px; color: white; font-size: 12px; box-sizing: border-box; margin-bottom: 10px; outline: none;">
-        <div style="display: flex; gap: 8px;">
-            <button id="summarizeBtn" class="btn-main" style="font-size: 12px; padding: 8px;">Summarize</button>
-            <button id="citationBtn" class="btn-secondary" style="font-size: 12px; padding: 8px; margin-bottom: 0; text-align: center;">Get Citation</button>
-        </div>
-    </div>
+        <div class="dashboard-grid">
+            
+            <div class="grid-column">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <select id="timerPreset" style="background: transparent; color: var(--text-dim); border: none; font-size: 11px; font-weight: 600; cursor: pointer; outline: none;">
+                            <option value="25" style="background: var(--bg);">POMODORO (25M)</option>
+                            <option value="45" style="background: var(--bg);">DEEP WORK (45M)</option>
+                            <option value="5" style="background: var(--bg);">SHORT BREAK (5M)</option>
+                        </select>
+                        <span id="timer" class="timer-val">25:00</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 12px;">
+                        <button id="startTimer" class="btn-main">Start Session</button>
+                        <button id="resetTimer" class="btn-secondary" style="width: 45px; text-align: center; margin-bottom: 0; padding: 0;">↺</button>
+                    </div>
+                </div>
 
-    <div style="margin-top: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin: 0; letter-spacing: 0.05em;">RESEARCH VAULT</p>
-            <select id="workspaceTag" style="background: transparent; color: var(--text-dim); border: none; font-size: 11px; font-weight: 600; cursor: pointer; outline: none;">
-                <option value="General" style="background: var(--bg);">📁 GENERAL</option>
-                <option value="Math" style="background: var(--bg);">📐 MATH</option>
-                <option value="Science" style="background: var(--bg);">🧬 SCIENCE</option>
-            </select>
-        </div>
-        
-        <button id="saveNoteBtn" class="btn-secondary" style="margin-bottom: 12px;">
-            <div style="font-weight: 600; font-size: 13px; color: #60a5fa;">Quick Save Link</div>
-            <div style="font-size: 11px; color: var(--text-dim);">Sync current active tab metadata</div>
-        </button>
+                <div class="card">
+                    <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin: 0 0 10px 0; letter-spacing: 0.05em;">AI WORKBENCH</p>
+                    <input type="text" id="customPrompt" placeholder="Ask AI something about this page..." style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px; color: white; font-size: 12px; box-sizing: border-box; margin-bottom: 10px; outline: none;">
+                    <div style="display: flex; gap: 8px;">
+                        <button id="summarizeBtn" class="btn-main" style="font-size: 12px; padding: 8px;">Summarize</button>
+                        <button id="citationBtn" class="btn-secondary" style="font-size: 12px; padding: 8px; margin-bottom: 0; text-align: center;">Get Citation</button>
+                    </div>
+                </div>
+            </div>
 
-        <input type="text" id="vaultSearch" placeholder="🔍 Search recent saves..." style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 6px 10px; color: white; font-size: 11px; box-sizing: border-box; margin-bottom: 10px; outline: none;">
-        
-        <div id="notesList"></div>
-        
-        <button id="exportBtn" style="background: transparent; color: var(--text-dim); font-size: 11px; border: none; cursor: pointer; padding: 4px; margin-top: 8px; width: 100%; text-align: right;">📦 Export Workspace (JSON)</button>
+            <div class="grid-column">
+                <div class="card" style="margin-bottom: 0; min-height: 250px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                            <p style="font-size: 11px; color: var(--text-dim); font-weight: 600; margin: 0; letter-spacing: 0.05em;">RESEARCH VAULT</p>
+                            <select id="workspaceTag" style="background: transparent; color: var(--text-dim); border: none; font-size: 11px; font-weight: 600; cursor: pointer; outline: none;">
+                                <option value="General" style="background: var(--bg);">📁 GENERAL</option>
+                                <option value="Math" style="background: var(--bg);">📐 MATH</option>
+                                <option value="Science" style="background: var(--bg);">🧬 SCIENCE</option>
+                            </select>
+                        </div>
+                        
+                        <button id="saveNoteBtn" class="btn-secondary" style="margin-bottom: 12px; width: 100%;">
+                            <div style="font-weight: 600; font-size: 13px; color: #60a5fa;">Quick Save Link</div>
+                            <div style="font-size: 11px; color: var(--text-dim);">Sync current active tab metadata</div>
+                        </button>
+
+                        <input type="text" id="vaultSearch" placeholder="🔍 Search recent saves..." style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 8px; color: white; font-size: 11px; box-sizing: border-box; margin-bottom: 12px; outline: none;">
+                        
+                        <div id="notesList"></div>
+                    </div>
+                    
+                    <button id="exportBtn" style="background: transparent; color: var(--text-dim); font-size: 11px; border: none; cursor: pointer; padding: 4px; width: 100%; text-align: right; margin-top: 12px;">📦 Export Workspace (JSON)</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script src="popup.js"></script>
